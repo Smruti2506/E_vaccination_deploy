@@ -1,0 +1,63 @@
+<!-- home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <title>Parent & Baby Information</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+<body>
+    <div class="info-container">
+        <h2>Enter Parent and Baby Information</h2>
+        <form id="info-form" class="transparent-form">
+            <label for="mother-name">Mother's Name: &#x1F469; <span style ="font-size: 20px;"></span> 
+            </label>
+            <input type="text" id="mother-name" name="mother-name" placeholder="Enter Mother's Name" required>
+
+            <label for="father-name">Father's Name:&#x1F468; <span style ="font-size: 20px;"></span> 
+            </label>
+            <input type="text" id="father-name" name="father-name" placeholder="Enter Father's name" required>
+
+            <label for="baby-name">Baby's Name:&#x1F476; <span style="font-size: 20px;"></span>
+            </label>
+            <input type="text" id="baby-name" name="baby-name" placeholder="Enter Baby's Name" required>
+
+            <label for="birth-date">
+                Baby's Birthdate:&#x1F4C5; <span style="font-size: 20px;"></span>
+            </label>
+            <input type="date" id="birth-date" name="birthDate" required>
+    
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- Vaccination chart idea  -->
+        <div id="vaccination-chart" style="display: none;">
+            <ul id="chart-list"></ul>
+        </div>
+        
+
+        <!--TimeStamp-->
+        <div class="timestamp-container">
+            <p id="timestamp"></p>
+        </div>
+        
+        <!--Log-out button -->
+        <div class="logout-container">
+            <button class="logout-btn" onclick="logout()">
+                <i class='bx bx-log-out'></i> Logout
+            </button>
+        </div>
+        
+        <!-- Back button for redirects to welcome.html -->
+        <button class="back-btn">
+            <i class="bx bx-arrow-back"></i> Back
+        </button>
+        
+
+    </div>
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="script.js"></script>    
+</body>
+</html>

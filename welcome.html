@@ -1,0 +1,68 @@
+<!-- welcome.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to BabyShield</title>
+    <link rel="stylesheet" href="welcome.css"> <!-- Creating Separate CSS file for welcome page -->
+</head>
+<body>
+    <video class="video-bg" autoplay muted loop>
+        <source src="media/baby.mp4" type="video/mp4">
+    </video>
+    <div class="welcome-container">
+        <!-- Header Section -->
+        <header>
+            <!-- logo functionallity -->
+            <video autoplay loop muted class="logo-animation">
+                <source src="media/Cute Babylogo.mp4" type="video/mp4">
+            </video> <!-- Adding logo file -->
+            <h1>Welcome to BabyShield</h1>
+            <p>Your Partner in Baby Vaccination and Healthcare!</p>
+        </header>
+
+        <!-- Navigation Section -->
+        <div class="navigation">
+            <button onclick="window.location.href='E_Vaccination_Login.html#login'" class="nav-btn">Login</button>
+            <button onclick="window.location.href='E_Vaccination_Login.html#register'" class="nav-btn">Register</button>
+            <button onclick="window.location.href='Learnmore.html'" class="nav-btn">Learn More</button>
+        </div>
+        
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <h2>Why Choose BabyShield?</h2>
+            <ul>
+                <li>&#10004; Track your baby’s vaccination schedule effortlessly.</li>
+                <li>&#10004; Receive timely reminders for upcoming vaccinations.</li>
+                <li>&#10004; Access detailed health records securely.</li>
+            </ul>
+        </section>
+
+        <div class="rotating-text">
+            <p id="text-display"></p>
+        </div>
+                
+        <!-- History Section -->
+        <section class="history">
+            <h2>Our Story</h2>
+            <p>
+            BabyShield started with a mission to ensure every baby gets timely vaccinations and the best healthcare. 
+            Over the years, we have supported thousands of parents in keeping their babies safe and healthy.
+            </p>
+            <p>
+            Join us in our journey to create a healthier tomorrow, one baby at a time.
+            </p>
+        </section>
+
+        <!-- Next Button 
+        <button onclick="window.location.href='home.html'" class="next-btn">Next</button>-->
+
+        <!-- Footer Section copyright -->
+        <footer>
+            <p>&copy; 2025 BabyShield. All Rights Reserved.</p>
+            <a href="Privacy.html">Privacy Policy</a> | <a href="Terms.html">Terms & Conditions</a>
+        </footer>
+    </div>
+</body>
+</html>

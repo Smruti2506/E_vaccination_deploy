@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Reset margin and padding for all elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Use Poppins font */
+}
+
+/* Center content on the page */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height */
+    background: linear-gradient(90deg, #e2e2e2, #fef5f5); /* Background gradient */
+}
+
+/* Main container for the forms */
+.container {
+    position: relative;
+    width: 850px;
+    height: 550px;
+    background: #fff; /* White background */
+    border-radius: 30px; /* Rounded corners */
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    overflow: hidden; /* Prevent content overflow */
+}
+
+/* Adjust layout when the container is active */
+.container.active .login {
+    transform: translateX(-100%); /* Slide login form out */
+}
+
+.container.active .register {
+    transform: translateX(0); /* Slide register form in */
+}
+
+/* Styling for the form box */
+.from-box {
+    position: absolute;
+    right: 0; /* Align to the right */
+    width: 50%;
+    height: 100%;
+    background: #fff; /* White background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #333; /* Dark text color */
+    text-align: center;
+    padding: 40px;
+    z-index: 1; /* Set above other elements */
+    transition: .6s ease-in-out 1.2s, visibility 0s 1s; /* Smooth transition */
+}
+
+/* Adjust form box position when active */
+.container.active.from-box {
+    right: 50%;
+}
+
+/* Show register form only when active */
+.container.active.from-box.register {
+    visibility: visible;
+}
+
+/* Hide register form initially */
+.form-box.register {
+    visibility: hidden;
+}
+
+/* Set initial login form position */
+.login {
+    transform: translateX(0);
+}
+
+/* Set initial register form position */
+.register {
+    transform: translateX(100%);
+    opacity: 0; /* Make it invisible */
+    visibility: hidden; /* Hide it */
+}
+
+/* Show register form when container is active */
+.container.active .register {
+    opacity: 1; /* Make it visible */
+    visibility: visible; /* Display it */
+}
+
+/* Styling for the form elements */
+form {
+    width: 100%;
+}
+
+/* Styling for headings in the container */
+.container h1 {
+    font-size: 36px;
+    margin: -10px 0;
+}
+
+/* Input box container */
+.input-box {
+    position: relative;
+    margin: 30px 0;
+}
+
+/* Input field styling */
+.input-box input {
+    width: 100%;
+    padding: 13px 50px 13px 20px; /* Add padding for icons */
+    background: #eee; /* Light gray background */
+    border-radius: 8px; /* Rounded corners */
+    border: none;
+    outline: none; /* Remove outline */
+    font-size: 16px;
+    color: #333; /* Dark text */
+    font-weight: 500;
+}
+
+/* Placeholder styling */
+.input-box input::placeholder {
+    color: #888; /* Gray placeholder text */
+    font-weight: 400;
+}
+
+/* Icon inside input box */
+.input-box i {
+    position: absolute;
+    right: 20px; /* Position icon */
+    top: 50%;
+    transform: translateY(-50%); /* Center icon vertically */
+    font-size: 20px;
+    color: #888; /* Gray icon color */
+}
+
+/* Forgot password link */
+.forgot-link {
+    margin: -15px 0 15px;
+}
+
+.forgot-link a {
+    font-size: 14.5px;
+    color: #333; /* Dark text */
+    text-decoration: none;
+}
+
+/* Button styling */
+.btn {
+    width: 100%;
+    height: 48px;
+    background: #fbbcbc; /* Soft pink background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border: none;
+    cursor: pointer; /* Pointer cursor */
+    font-size: 16px;
+    color: #fff; /* White text */
+    font-weight: 600;
+}
+
+/* Text styling in the container */
+.container p {
+    font-size: 14.5px;
+    margin: 15px 0;
+}
+
+/* Social media icon buttons */
+.social-icons {
+    display: flex; /* Horizontally align */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Vertically align */
+    gap: 15px; /* Spacing between icons */
+}
+
+.social-icons a {
+    display: inline-flex;
+    justify-content: center; /* Center text inside button */
+    align-items: center; /* Vertically align text inside button */
+    width: 50px; /* Fixed width for uniform buttons */
+    height: 50px; /* Fixed height for uniform buttons */
+    border: 2px solid #fbbcbc; /* Pink border */
+    border-radius: 8px; /* Rounded corners */
+    text-decoration: none;
+    background-color: #fff;
+    transition: transform 0.2s;
+}
+
+.social-icons a:hover {
+    transform: scale(1.1);
+}
+
+.google-icon {
+    font-size: 28px; /* Icon size */
+    font-weight: bold; /* Bold effect */
+    background: conic-gradient(
+        #4285F4 0% 25%,   /* Blue */
+        #EA4335 25% 50%,  /* Red */
+        #FBBC05 50% 75%,  /* Yellow */
+        #34A853 75% 100%  /* Green */
+    );
+    background-clip: text;
+    -webkit-background-clip: text; /* Apply gradient only on text */
+    -webkit-text-fill-color: transparent; /* Make the rest of the text transparent */
+    text-align: center;
+    line-height: 1; /* For proper alignment */
+}
+
+.facebook-icon{
+    font-size: 28px;
+    color: #4267B2;
+}
+  
+/* Toggle box for switching forms */
+.toggle-box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+/* Background transition for toggle box */
+.toggle-box::before {
+    content: '';
+    position: absolute;
+    left: -250%; /* Position off-screen */
+    width: 300%; /* Extra-wide background */
+    height: 100%;
+    background: #fbbcbc; /* Pink background */
+    border-radius: 150px; /* Rounded effect */
+    z-index: 2; /* Place above forms */
+    transition: 1.8s ease-in-out; /* Smooth transition */
+}
+
+/* Adjust background when active */
+.container.active.toggle-box::before {
+    left: 50%;
+}
+
+/* Toggle panel styling */
+.toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    color: #fff; /* White text */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    transition: .6s ease-in-out; /* Smooth transition */
+}
+
+/* Left toggle panel */
+.toggle-panel.toggle-left {
+    left: 0;
+    transition-delay: 1.2s;
+}
+
+/* Hide left panel when active */
+.container.active.toggle-panel.toggle-left {
+    left: -50%;
+    transition-delay: .6s;
+}
+
+/* Right toggle panel */
+.toggle-panel.toggle-right {
+    right: -50%;
+    transition-delay: .6s;
+}
+
+/* Show right panel when active */
+.container.active.toggle-panel.toggle-right {
+    right: 0;
+    transition-delay: 1.2s;
+}
+
+/* Paragraph styling in toggle panel */
+.toggle-panel p {
+    margin-bottom: 20px;
+}
+
+/* Button styling in toggle panel */
+.toggle-panel .btn {
+    width: 160px;
+    height: 46px;
+    background: transparent; /* Transparent background */
+    border: 2px solid #fff; /* White border */
+    box-shadow: none; /* Remove shadow */
+}

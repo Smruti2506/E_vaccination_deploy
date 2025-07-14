@@ -1,0 +1,114 @@
+<!--Here i'm creating learn more button code -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baby Vaccination System - Learn More</title>
+  <style>
+    /* Learn More Section Styles */
+    
+    /* Style for the main section container */
+    .learn-more-section {
+      background-color: linear-gradient(to right, #fff, #fbbcbc);; /* Light background for better contrast */
+      padding: 50px 20px; /* Spacing around the content */
+      text-align: center; /* Center align the text */
+      border-radius: 15px; /* Rounded corners */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    }
+
+    /* Limit section content width */
+    .learn-more-section .container {
+      max-width: 800px; /* Maximum width for content */
+      margin: 0 auto; /* Center align container */
+    }
+
+    /* Style for the section heading */
+    .learn-more-section h2 {
+      font-size: 2rem; /* Large font size */
+      color: #333; /* Dark text color */
+      margin-bottom: 20px; /* Space below the heading */
+    }
+
+    /* Style for paragraph text */
+    .learn-more-section p {
+      font-size: 1rem; /* Standard text size */
+      color: #555; /* Medium gray for readability */
+      line-height: 1.6; /* Improve text spacing */
+      margin: 15px 0; /* Space above and below paragraphs */
+    }
+
+    /* Style for the feature list */
+    .learn-more-section ul {
+      text-align: left; /* Left align list items */
+      margin: 20px 0; /* Space around the list */
+      padding: 0; /* Remove default padding */
+      list-style: none; /* Remove default list style */
+    }
+
+    /* Style for each list item */
+    .learn-more-section ul li {
+      font-size: 1rem; /* Standard text size */
+      color: #333; /* Dark text color */
+      margin: 10px 0; /* Space between items */
+      position: relative; /* For positioning the checkmark icon */
+      padding-left: 25px; /* Space for the checkmark */
+    }
+
+    /* Add a checkmark icon before each list item */
+    .learn-more-section ul li::before {
+      content: "✔"; /* Checkmark symbol */
+      color: #4caf50; /* Green color for the icon */
+      position: absolute; /* Position relative to list item */
+      left: 0; /* Align to the left */
+      top: 0; /* Align to the top */
+    }
+
+    /* Style for the "Get Started" button */
+    .learn-more-button {
+      display: inline-block; /* Inline button */
+      margin-top: 20px; /* Space above the button */
+      padding: 12px 30px; /* Button size */
+      font-size: 1rem; /* Standard text size */
+      color: white; /* White text color */
+      background-color: #4caf50; /* Green background */
+      text-decoration: none; /* Remove underline */
+      border-radius: 25px; /* Rounded button corners */
+      transition: background-color 0.3s ease; /* Smooth hover effect */
+    }
+
+    /* Hover effect for the button */
+    .learn-more-button:hover {
+      background-color: #45a049; /* Darker green on hover */
+    }
+  </style>
+</head>
+<body>
+  <!-- Learn More Section -->
+  <section id="learn-more" class="learn-more-section">
+    <div class="container">
+      <!-- Section heading -->
+      <h2>Learn More About Our Baby Vaccination System</h2>
+      <!-- Introductory text -->
+      <p>
+        Our system helps parents track their baby's vaccination schedule effortlessly. 
+        With personalized vaccination charts and timely reminders, you’ll never miss an important milestone.
+      </p>
+      <!-- List of key features -->
+      <ul>
+        <li>Simple registration and login process.</li>
+        <li>Personalized vaccination schedules based on the baby’s birthdate.</li>
+        <li>Automatic reminders for upcoming vaccinations.</li>
+        <li>Track progress with a clear and easy-to-use chart.</li>
+      </ul>
+      <!-- Closing text -->
+      <p>
+        Join us in ensuring your baby's healthy future. 
+        Start by registering today and stay on top of your baby’s health journey!
+      </p>
+      <!-- Call-to-action button -->
+      <a href="E_Vaccination_Login.html" class="learn-more-button">Get Started</a>
+    </div>
+  </section>
+</body>
+</html>

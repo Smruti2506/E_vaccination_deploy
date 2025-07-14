@@ -1,0 +1,83 @@
+/* Page background and fonts */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom right, #fdfdfd, #fae3d9);
+    margin: 0;
+    padding: 2rem;
+    color: #333;
+  }
+  
+  /* Chart Title */
+  h2 {
+    text-align: center;
+    color: #c2185b;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Baby details */
+  p {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Vaccination table */
+  table {
+    width: 90%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  /* Table headers */
+  thead {
+    background-color: #fbbcbc;
+    color: #333;
+  }
+  
+  th, td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+  }
+  
+  /* Row hover effect */
+  tr:hover {
+    background-color: #fdfdfd;
+  }
+  
+  /* Status colors */
+  td:nth-child(4) {
+    font-weight: bold;
+  }
+  
+  td:nth-child(4):contains("✔ Done") {
+    color: green;
+  }
+  
+  td:nth-child(4):contains("Pending") {
+    color: orange;
+  }
+  
+  /* Checkbox */
+  input[type="checkbox"] {
+    transform: scale(1.3);
+    cursor: pointer;
+  }
+  
+  /* Responsive layout */
+  @media screen and (max-width: 768px) {
+    table {
+      font-size: 0.8rem;
+    }
+  
+    th, td {
+      padding: 0.6rem;
+    }
+  }
+  

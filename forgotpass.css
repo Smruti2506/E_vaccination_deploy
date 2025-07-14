@@ -1,0 +1,110 @@
+/* CSS File: styles.css */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: rgb(255, 236, 236);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.forgot-password-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.forgot-password-card {
+    display: flex;
+    background-color: #fff;
+    box-shadow: 0 4px 20px rgba(37, 32, 32, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    width: 800px;
+}
+
+.left-section {
+    background-color: #ffbcc2;
+    width: 50%;
+    padding: 50px;
+    color: rgb(255, 169, 169);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.left-image {
+    width: 480px;
+    height: 400px;
+    object-fit: cover;
+    /* border-radius: 50%; */
+    margin-bottom: 20px;
+
+    margin-bottom: 10px;
+    background-color: #df9090;
+}
+
+.left-section button {
+    background-color:  #141313;
+    color: #ffa7b8;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    background-color: rgb(255, 165, 170);
+}
+
+.right-section {
+    width: 50%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color:#2e2a2a;
+   
+  
+}
+
+.right-section form {
+    display: flex;
+    
+    flex-direction: column;
+    width: 90%;
+}
+
+input {
+    padding: 10px;
+    margin: 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+}
+
+button[type="submit"] {
+    background-color:#ffaaa9;
+    color: rgb(253, 247, 248);
+    padding: 6px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* button[type="submit"]:hover {
+    background-color: #f89c9c; */
+/* } */
+
+a {
+    margin-top: 15px;
+    color: #1b1a1a;
+    text-decoration: none;
+    font-weight: bold;
+}

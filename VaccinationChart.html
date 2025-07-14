@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vaccination Chart</title>
+  <link rel="stylesheet" href="VaccinationChart.css">
+</head>
+<body>
+
+  <h2>Vaccination Chart for <span id="name-output"></span></h2>
+  <p><strong>Birthdate:</strong> <span id="baby-birthdate"></span></p>
+
+  <table id="vaccination-table">
+    <thead>
+      <tr>
+        <th>Age Label</th>
+        <th>Vaccine Name</th>
+        <th>Vaccinated Date</th>
+        <th>Status</th>
+        <th>Due Date</th>
+        <th>Mark</th>
+      </tr>
+    </thead>
+    <tbody id="schedule-body">
+       <!-- JS will dynamically fill this  -->
+    </tbody> 
+   </table>
+
+  <!-- 🔁 Firebase + Vaccination Logic -->
+  <script type="module" src="VaccinationChart.js"></script>
+
+ </body>
+</html> 
+
+

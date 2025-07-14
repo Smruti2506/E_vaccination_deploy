@@ -1,0 +1,226 @@
+/* General body styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('./media/background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center; /* Ensures the image fully covers without white spaces */
+    color: #333;
+}
+
+/* Home page styling */
+.homepage {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Centers text horizontally */
+    background: url('./media/background.png') no-repeat center center/cover; /* Eliminates white spaces */
+    position: relative;
+}
+
+.homepage h1 {
+    font-size: 3rem;
+    color: #333; /* Darker text for readability */
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); /* Optional for visibility */
+}
+
+.homepage p {
+    font-size: 1.5rem;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.homepage::before {
+    content: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.homepage h1, .homepage p {
+    position: relative;
+    z-index: 2; /* Ensures text stays above overlay */
+}
+
+/* Container styling */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    padding: 20px 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center; /* Centers text horizontally */
+}
+
+/* Header styling */
+h1 {
+    font-size: 2.5rem;
+    color: #c2185b; /*  pastel color */
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.8rem;
+    color: #c2185b; /* pastel color */
+    margin-bottom: 15px;
+}
+
+/* Input and form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+label {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #c2185b;
+    margin-right: 10px;
+}
+
+input[type="text"], input[type="date"] {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px; /* Rounded inputs */
+    font-size: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* now i'm giving container for parent baby info */
+.transparent-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px 30px;
+    background: rgba(255, 255, 255, 0.4); /* Semi-transparent white */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Optional border */
+}
+
+/* Specific styling for Mother's Name and Father's Name fields (optional) */
+#mother-name, #father-name {
+    background: #ecc3de; /* Light purple background for a unique look */
+    padding-left: 30px; /* Leaves space for icons */
+    border: 1px solid #c84074;
+}
+
+#mother-name::placeholder, #father-name::placeholder {
+    font-style: italic;
+    color: #000; /* Placeholder color */
+}
+
+/* Specific styling for Baby's Name and Birthdate fields */
+#baby-name, #birth-date {
+    background: #ecc3de; /* Light blue background for a baby theme */
+    padding-left: 30px; /* Leaves space for icons */
+    border: 1px solid #000;
+}
+
+#baby-name::placeholder, #birth-date::placeholder {
+    font-style: italic;
+    color: #000; /* Placeholder color */
+}
+
+button[type="submit"] {
+    background: linear-gradient(to right, #ff6f61, #ff8a65); /* Gradient buttons */
+    color: #ffffff;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px; /* Rounded button */
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(to right, #ff8a65, #ff6f61); /* Hover effect for button */
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+/*The timestamp container */
+.timestamp-container {
+    position: fixed; /* Fix the position */
+    top: 10px; /* Place it near the top */
+    right: 10px; /* Align it to the right */
+    font-size: 14px;
+    color: #555;
+   /* background-color: #fff; /* Add background for visibility */
+    padding: 5px 10px; /* Padding for a clean look */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+/*Log Out Button */
+.logout-btn {
+    position: fixed; /* Fix the position */
+    bottom: 20px; /* Place it at the bottom */
+    right: 20px; /* Align it to the right */
+    background-color:#ffcccb;
+    color: #333;
+    font-size: 16px;
+    padding: 8px 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #ff7f7f;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Back Button Styling */
+button.back-btn {
+    background-color: #ffcccb; /* Light red color */
+    color: #000; /* Black text */
+    font-size: 16px; /* Increase text size */
+    padding: 8px 20px; /* Add padding for a larger button */
+    border: none; /* Remove default border */
+    border-radius: 10px; /* Rounded corners */
+    cursor: pointer; /* Show pointer on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    transition: all 0.3s ease; /* Smooth transition on hover */
+}
+
+button.back-btn:hover {
+    background-color: #ff7f7f; /* Darker red on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+    transform: translateY(-2px); /* Slight upward movement */
+}
+
+/* Add cute icon next to each list item */
+#chart-list li::before {
+    content: '\1F476'; /* Baby emoji as an icon */
+    margin-right: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    input[type="text"], input[type="date"] {
+        width: 100%;
+    }
+}
