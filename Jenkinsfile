@@ -91,7 +91,7 @@ spec:
                             sonar-scanner \
                               -Dsonar.projectKey=BabyShield \
                               -Dsonar.sources=. \
-                              -Dsonar.host.url=http://my-sonarqube-sonarqube.sonarqube.svc.cluster.local:9000 \
+                              -Dsonar.host.url=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000
                               -Dsonar.token=$SONAR_TOKEN
                         '''
                     }
