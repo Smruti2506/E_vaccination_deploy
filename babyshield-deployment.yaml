@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "2401107"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: babyshield-deployment
+  namespace: "2401107"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: babyshield
+  template:
+    metadata:
+      labels:
+        app: babyshield
+    spec:
+      containers:
+        - name: babyshield-container
+          image: babyshield:v1   # 👈 change if you push to DockerHub
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: babyshield-service
+  namespace: "2401107"
+spec:
+  selector:
+    app: babyshield
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080   # ✅ college server pe browser se access hoga

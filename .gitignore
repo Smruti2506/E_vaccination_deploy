@@ -1,0 +1,28 @@
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node modules (future safety)
+node_modules/
+
+# Environment / secrets (agar baad me add karo)
+.env
+
+# Editor settings
+.vscode/
+.idea/
+
+# Build artifacts (optional safety)
+dist/
+build/
+
+# Docker
+docker-compose.override.yml
+
+# npm debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
