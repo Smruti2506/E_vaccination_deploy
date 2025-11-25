@@ -17,9 +17,6 @@ spec:
     command:
     - cat
     tty: true
-    securityContext:
-      runAsUser: 0
-      readOnlyRootFilesystem: false
     env:
     - name: KUBECONFIG
       value: /kube/config        
@@ -30,21 +27,19 @@ spec:
 
   - name: dind
     image: docker:dind
-    args: ["--registry-mirror=https://mirror.gcr.io", "--storage-driver=overlay2"]
     securityContext:
       privileged: true
     env:
     - name: DOCKER_TLS_CERTDIR
       value: ""
     volumeMounts:
-    - name: docker-config
-      mountPath: /etc/docker/daemon.json
-      subPath: daemon.json
+    - name: docker-storage
+      mountPath: /var/lib/docker
 
   volumes:
-  - name: docker-config
-    configMap:
-      name: docker-daemon-config
+  - name: docker-storage
+    emptyDir: {}
+
   - name: kubeconfig-secret
     secret:
       secretName: kubeconfig-secret
@@ -54,14 +49,6 @@ spec:
 
     stages {
 
-        /* ---------------------- CHECKOUT ----------------------- */
-        stage('Declarative: Checkout SCM') {
-            steps {
-                checkout scm
-            }
-        }
-
-        /* -------------------- DOCKER BUILD --------------------- */
         stage('Build Docker Image') {
             steps {
                 container('dind') {
@@ -74,44 +61,35 @@ spec:
             }
         }
 
-        /* -------------------- SONARQUBE ------------------------ */
         stage('SonarQube Analysis') {
             steps {
                 container('sonar-scanner') {
                     withCredentials([string(credentialsId: 'sonar-token-2401107', variable: 'SONAR_TOKEN')]) {
                         sh '''
                             sonar-scanner \
-                                -Dsonar.projectKey=Babyshieldtoken \
-                                -Dsonar.projectName=Babyshieldtoken \
-                                -Dsonar.sources=. \
-                                -Dsonar.host.url=http://my-sonarqube-sonarqube.sonarqube.svc.cluster.local:9000 \
-                                -Dsonar.login=$SONAR_TOKEN \
-                                -Dsonar.sourceEncoding=UTF-8
+                            -Dsonar.projectKey=2401107_Sem2 \
+                            -Dsonar.projectName=2401107_Sem2 \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://my-sonarqube-sonarqube.sonarqube.svc.cluster.local:9000 \
+                            -Dsonar.token=$SONAR_TOKEN
                         '''
                     }
                 }
             }
         }
 
-        /* ---------------- PUSH TO NEXUS DOCKER ---------------- */
         stage('Push to Registry') {
             steps {
                 container('dind') {
                     sh '''
-                        docker login nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 \
-                        -u admin -p Changeme@2025
-
-                        docker tag babyshield:latest \
-                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/babyshield/babyshield:v1
-
-                        docker push \
-                        nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/babyshield/babyshield:v1
+                        docker login nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 -u student -p Changeme@2025
+                        docker tag babyshield:latest nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/2401107/babyshield:v1
+                        docker push nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/2401107/babyshield:v1
                     '''
                 }
             }
         }
 
-        /* ---------------- KUBERNETES DEPLOYMENT -------------- */
         stage('Deploy to Kubernetes') {
             steps {
                 container('kubectl') {
