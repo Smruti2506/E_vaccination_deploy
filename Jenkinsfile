@@ -6,7 +6,6 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
-
   - name: sonar-scanner
     image: sonarsource/sonar-scanner-cli
     command: ["cat"]
@@ -44,7 +43,6 @@ spec:
   - name: docker-config
     configMap:
       name: docker-daemon-config
-
   - name: kubeconfig-secret
     secret:
       secretName: kubeconfig-secret
@@ -53,55 +51,59 @@ spec:
     }
 
     environment {
-        IMAGE_LOCAL = "babyshield:latest"
-        REGISTRY = "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
-        REGISTRY_PATH = "smruti-project/babyshield"
-        IMAGE_TAGGED = "${REGISTRY}/${REGISTRY_PATH}:v${env.BUILD_NUMBER}"
+        PROJECT_NAME  = "BabyShield"
+        SONAR_SOURCES = "."
+        IMAGE_LOCAL   = "babyshield:latest"
 
-        SONAR_PROJECT = "BabyShield"
-        NAMESPACE = "2401107"
+        // CHANGE THIS (your actual SonarQube k8s service)
+        SONAR_URL     = "http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000"
+
+        // CHANGE THIS (your actual registry host + repo path)
+        REGISTRY      = "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
+        REGISTRY_PATH = "smruti-project/babyshield"
+
+        IMAGE_TAGGED  = "${REGISTRY}/${REGISTRY_PATH}:v${env.BUILD_NUMBER}"
+        NAMESPACE     = "2401107"
     }
 
     stages {
 
-        /* --------------------------------------- *
-         * 1. Build Docker Image
-         * --------------------------------------- */
-        stage('Build Docker Image') {
+        stage('Checkout Code') {
             steps {
-                container('dind') {
-                    sh '''
-                      echo "Building BabyShield Docker Image..."
-                      sleep 10
-                      docker build -t ${IMAGE_LOCAL} .
-                      docker image ls
-                    '''
-                }
+                git url: 'https://github.com/Smruti2506/E_vaccination_deploy.git', branch: 'main'
             }
         }
 
-        /* --------------------------------------- *
-         * 2. SonarQube Analysis
-         * --------------------------------------- */
         stage('SonarQube Analysis') {
             steps {
                 container('sonar-scanner') {
                     withCredentials([string(credentialsId: 'sonar-token-2401107', variable: 'SONAR_TOKEN')]) {
                         sh '''
+                            echo "🔍 Running Sonar Scanner..."
+
                             sonar-scanner \
-                              -Dsonar.projectKey=BabyShield \
-                              -Dsonar.sources=. \
-                              -Dsonar.host.url=http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000
-                              -Dsonar.token=$SONAR_TOKEN
+                              -Dsonar.projectKey=${PROJECT_NAME} \
+                              -Dsonar.sources=${SONAR_SOURCES} \
+                              -Dsonar.host.url=${SONAR_URL} \
+                              -Dsonar.token=${SONAR_TOKEN}
                         '''
                     }
                 }
             }
         }
 
-        /* --------------------------------------- *
-         * 3. Login to Registry
-         * --------------------------------------- */
+        stage('Build Docker Image') {
+            steps {
+                container('dind') {
+                    sh '''
+                        echo "🐳 Building Docker Image..."
+                        docker build -t ${IMAGE_LOCAL} .
+                        docker image ls
+                    '''
+                }
+            }
+        }
+
         stage('Login to Docker Registry') {
             steps {
                 container('dind') {
@@ -111,20 +113,19 @@ spec:
                         passwordVariable: 'DOCKER_PASS'
                     )]) {
                         sh '''
-                          echo $DOCKER_PASS | docker login ${REGISTRY} -u $DOCKER_USER --password-stdin
+                            echo "🔐 Logging into Docker Registry..."
+                            echo $DOCKER_PASS | docker login ${REGISTRY} -u $DOCKER_USER --password-stdin
                         '''
                     }
                 }
             }
         }
 
-        /* --------------------------------------- *
-         * 4. Tag & Push Image
-         * --------------------------------------- */
-        stage('Build - Tag - Push Image') {
+        stage('Tag & Push Image') {
             steps {
                 container('dind') {
                     sh '''
+                        echo "📤 Tagging & Pushing Image..."
                         docker tag ${IMAGE_LOCAL} ${IMAGE_TAGGED}
                         docker push ${IMAGE_TAGGED}
                     '''
@@ -132,15 +133,13 @@ spec:
             }
         }
 
-        /* --------------------------------------- *
-         * 5. Deploy to Kubernetes
-         * --------------------------------------- */
         stage('Deploy to Kubernetes') {
             steps {
                 container('kubectl') {
                     sh '''
-                      kubectl apply -f babyshield-deployment.yaml -n ${NAMESPACE}
-                      kubectl rollout status deployment/babyshield-deployment -n ${NAMESPACE}
+                        echo "🚀 Deploying BabyShield..."
+                        kubectl apply -f babyshield-deployment.yaml
+                        kubectl rollout status deployment/babyshield-deployment -n ${NAMESPACE}
                     '''
                 }
             }
