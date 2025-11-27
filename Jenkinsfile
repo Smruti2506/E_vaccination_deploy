@@ -106,19 +106,13 @@ spec:
                         }
                     }
                 }
+                
         stage('Login to Docker Registry') {
             steps {
                 container('dind') {
-                    withCredentials([usernamePassword(
-                        credentialsId: 'nexus-docker-2401107',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )]) {
-                        sh '''
-                            echo "🔐 Logging into Docker Registry..."
-                            echo $DOCKER_PASS | docker login ${REGISTRY} -u $DOCKER_USER --password-stdin
-                        '''
-                    }
+                    sh 'docker --version'
+                    sh 'sleep 10'
+                    sh 'docker login nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085 -u admin -p Changeme@2025'
                 }
             }
         }
