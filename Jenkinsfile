@@ -106,7 +106,6 @@ spec:
                         }
                     }
                 }
-                
         stage('Login to Docker Registry') {
             steps {
                 container('dind') {
@@ -116,7 +115,6 @@ spec:
                 }
             }
         }
-
         stage('Tag & Push Image') {
             steps {
                 container('dind') {
