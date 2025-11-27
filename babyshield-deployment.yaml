@@ -1,7 +1,17 @@
+# -------------------------------
+# PersistentVolumeClaim (optional – remove if not needed)
+# -------------------------------
 apiVersion: v1
-kind: Namespace
+kind: PersistentVolumeClaim
 metadata:
-  name: "2401107"
+  name: babyshield-pvc
+  namespace: "2401107"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,7 +34,35 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
+
+          # ---- HEALTH CHECKS ----
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 30
+
+          # ---- PVC Mount (optional) ----
+          volumeMounts:
+            - name: babyshield-static
+              mountPath: /usr/share/nginx/html   # change if not using nginx
+
+      volumes:
+        - name: babyshield-static
+          persistentVolumeClaim:
+            claimName: babyshield-pvc
 ---
+# -------------------------------
+# Service
+# -------------------------------
 apiVersion: v1
 kind: Service
 metadata:
@@ -33,9 +71,32 @@ metadata:
 spec:
   selector:
     app: babyshield
-  type: NodePort
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 30107
+  type: ClusterIP
+---
+# -------------------------------
+# Ingress
+# -------------------------------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: babyshield-ingress
+  namespace: "2401107"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: babyshield.imcc.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: babyshield-service
+                port:
+                  number: 80
