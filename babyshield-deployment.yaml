@@ -20,7 +20,8 @@ spec:
     spec:
       containers:
         - name: babyshield-container
-          image: babyshield:v1   # 👈 change if you push to DockerHub
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/babyshield:v1
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
 ---
@@ -37,4 +38,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 30107  # ✅ college server pe browser se access hoga
+      nodePort: 30107
