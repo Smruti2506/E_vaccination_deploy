@@ -54,7 +54,7 @@ spec:
         // -------- SONAR CONFIG --------
         PROJECT_KEY   = "2401107_Sem2"
         PROJECT_NAME  = "2401107_Sem2"
-        SONAR_URL     = "http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000"
+        SONAR_URL     = "http://my-sonarqube-sonarqube.sonarqube.svc.cluster.local:9000"
         SONAR_SOURCES = "."
 
         // -------- DOCKER CONFIG --------
@@ -92,6 +92,7 @@ spec:
                             withCredentials([string(credentialsId: 'sonar-token-2401107', variable: 'SONAR_TOKEN')]) {
                                 sh '''
                                     echo "🔍 Running Sonar Scanner..."
+
 
                                     sonar-scanner \
                                     -Dsonar.projectKey=${PROJECT_KEY} \
