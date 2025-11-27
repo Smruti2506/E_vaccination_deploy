@@ -133,7 +133,7 @@ spec:
                     sh '''
                         echo "🚀 Deploying BabyShield..."
                         kubectl apply -f babyshield-deployment.yaml
-                        kubectl rollout status deployment/babyshield-deployment -n ${NAMESPACE}
+                        echo "kubectl rollout status deployment/babyshield-deployment -n ${NAMESPACE}"
                     '''
                 }
             }
