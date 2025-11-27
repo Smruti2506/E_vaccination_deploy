@@ -51,18 +51,19 @@ spec:
     }
 
     environment {
-        PROJECT_NAME  = "BabyShield"
-        SONAR_SOURCES = "."
-        IMAGE_LOCAL   = "babyshield:latest"
-
-        // CHANGE THIS (your actual SonarQube k8s service)
+        // -------- SONAR CONFIG --------
+        PROJECT_KEY   = "2401107_Sem2"
+        PROJECT_NAME  = "2401107_Sem2"
         SONAR_URL     = "http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000"
+        SONAR_SOURCES = "."
 
-        // CHANGE THIS (your actual registry host + repo path)
+        // -------- DOCKER CONFIG --------
+        IMAGE_LOCAL   = "babyshield:latest"
         REGISTRY      = "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
-        REGISTRY_PATH = "smruti-project/babyshield"
-
+        REGISTRY_PATH = "smruti-project/babyshield-frontend"
         IMAGE_TAGGED  = "${REGISTRY}/${REGISTRY_PATH}:v${env.BUILD_NUMBER}"
+
+        // -------- K8S CONFIG --------
         NAMESPACE     = "2401107"
     }
 
@@ -82,10 +83,12 @@ spec:
                             echo "🔍 Running Sonar Scanner..."
 
                             sonar-scanner \
-                              -Dsonar.projectKey=${PROJECT_NAME} \
+                              -Dsonar.projectKey=${PROJECT_KEY} \
+                              -Dsonar.projectName=${PROJECT_NAME} \
                               -Dsonar.sources=${SONAR_SOURCES} \
                               -Dsonar.host.url=${SONAR_URL} \
-                              -Dsonar.token=${SONAR_TOKEN}
+                              -Dsonar.token=${SONAR_TOKEN} \
+                              -Dsonar.sourceEncoding=UTF-8
                         '''
                     }
                 }
