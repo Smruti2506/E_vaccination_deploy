@@ -1,3 +1,18 @@
+# -------------------------------
+# PersistentVolumeClaim (optional – remove if not needed)
+# -------------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: babyshield-pvc
+  namespace: "2401107"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,25 +30,39 @@ spec:
     spec:
       containers:
         - name: babyshield-container
-          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/smruti-project/babyshield-frontend:v14
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/babyshield:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 80
 
+          # ---- HEALTH CHECKS ----
           readinessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            initialDelaySeconds: 10
+            periodSeconds: 10
 
           livenessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 15
-            periodSeconds: 10
+            initialDelaySeconds: 30
+            periodSeconds: 30
+
+          # ---- PVC Mount (optional) ----
+          volumeMounts:
+            - name: babyshield-static
+              mountPath: /usr/share/nginx/html   # change if not using nginx
+
+      volumes:
+        - name: babyshield-static
+          persistentVolumeClaim:
+            claimName: babyshield-pvc
 ---
+# -------------------------------
+# Service
+# -------------------------------
 apiVersion: v1
 kind: Service
 metadata:
@@ -43,10 +72,14 @@ spec:
   selector:
     app: babyshield
   ports:
-    - port: 80
+    - protocol: TCP
+      port: 80
       targetPort: 80
   type: ClusterIP
 ---
+# -------------------------------
+# Ingress
+# -------------------------------
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

@@ -1,5 +1,4 @@
 pipeline {
-
     agent {
         kubernetes {
             yaml '''
@@ -18,6 +17,7 @@ spec:
     tty: true
     securityContext:
       runAsUser: 0
+      readOnlyRootFilesystem: false
     env:
     - name: KUBECONFIG
       value: /kube/config
@@ -33,15 +33,24 @@ spec:
     env:
     - name: DOCKER_TLS_CERTDIR
       value: ""
-    command: ["dockerd-entrypoint.sh"]
-    args: ["--host=unix:///var/run/docker.sock"]
+    command:
+    - dockerd-entrypoint.sh
+    args:
+    - --host=unix:///var/run/docker.sock
+    - --storage-driver=overlay2
     volumeMounts:
     - name: docker-storage
       mountPath: /var/lib/docker
+    - name: docker-config
+      mountPath: /etc/docker/daemon.json
+      subPath: daemon.json
 
   volumes:
   - name: docker-storage
     emptyDir: {}
+  - name: docker-config
+    configMap:
+      name: docker-daemon-config
   - name: kubeconfig-secret
     secret:
       secretName: kubeconfig-secret
@@ -50,72 +59,101 @@ spec:
     }
 
     environment {
-        PROJECT_KEY  = "2401107_Sem2"
-        PROJECT_NAME = "2401107_Sem2"
-        SONAR_URL    = "http://my-sonarqube-sonarqube.sonarqube.svc.cluster.local:9000"
+        // -------- SONAR CONFIG --------
+        PROJECT_KEY   = "2401107_Sem2"
+        PROJECT_NAME  = "2401107_Sem2"
+        SONAR_URL     = "http://my-sonarqube-sonarqube.sonarqube.svc.cluster.local:9000"
+        SONAR_SOURCES = "."
 
-        IMAGE_LOCAL  = "babyshield:latest"
-        REGISTRY     = "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
-        IMAGE_TAGGED = "${REGISTRY}/smruti-project/babyshield-frontend:v${BUILD_NUMBER}"
+        // -------- DOCKER CONFIG --------
+        IMAGE_LOCAL   = "babyshield:latest"
+        REGISTRY      = "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
+        REGISTRY_PATH = "smruti-project/babyshield-frontend"
+        IMAGE_TAGGED  = "${REGISTRY}/${REGISTRY_PATH}:v${env.BUILD_NUMBER}"
 
-        NAMESPACE    = "2401107"
+        // -------- K8S CONFIG --------
+        NAMESPACE     = "2401107"
     }
 
     stages {
 
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
                 git url: 'https://github.com/Smruti2506/E_vaccination_deploy.git', branch: 'main'
             }
         }
 
-        stage('Build Image') {
+        stage('Build Docker Image') {
             steps {
                 container('dind') {
                     sh '''
-                    until docker info; do sleep 3; done
-                    docker build -t babyshield:latest .
+                        echo "⏳ Waiting for Docker daemon..."
+                        until docker info > /dev/null 2>&1; do
+                          sleep 3
+                        done
+
+                        echo "🐳 Building Docker Image..."
+                        docker build -t ${IMAGE_LOCAL} .
+                        docker image ls
                     '''
                 }
             }
         }
 
-        stage('SonarQube Scan') {
+        stage('SonarQube Analysis') {
             steps {
                 container('sonar-scanner') {
                     withCredentials([string(credentialsId: 'sonar-token-2401107', variable: 'SONAR_TOKEN')]) {
                         sh '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=${PROJECT_KEY} \
-                        -Dsonar.projectName=${PROJECT_NAME} \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=${SONAR_URL} \
-                        -Dsonar.token=${SONAR_TOKEN}
+                            echo "🔍 Running Sonar Scanner..."
+
+                            sonar-scanner \
+                              -Dsonar.projectKey=${PROJECT_KEY} \
+                              -Dsonar.projectName=${PROJECT_NAME} \
+                              -Dsonar.sources=${SONAR_SOURCES} \
+                              -Dsonar.host.url=${SONAR_URL} \
+                              -Dsonar.token=${SONAR_TOKEN} \
+                              -Dsonar.sourceEncoding=UTF-8
                         '''
                     }
                 }
             }
         }
 
-        stage('Push Image') {
+        stage('Login to Docker Registry') {
             steps {
                 container('dind') {
                     sh '''
-                    docker login ${REGISTRY} -u admin -p Changeme@2025
-                    docker tag babyshield:latest ${IMAGE_TAGGED}
-                    docker push ${IMAGE_TAGGED}
+                        until docker info > /dev/null 2>&1; do
+                          sleep 3
+                        done
+
+                        docker --version
+                        docker login ${REGISTRY} -u admin -p Changeme@2025
                     '''
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Tag & Push Image') {
+            steps {
+                container('dind') {
+                    sh '''
+                        echo "📤 Tagging & Pushing Image..."
+                        docker tag ${IMAGE_LOCAL} ${IMAGE_TAGGED}
+                        docker push ${IMAGE_TAGGED}
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
             steps {
                 container('kubectl') {
                     sh '''
-                    kubectl apply -f babyshield-deployment.yaml
-                    kubectl rollout restart deployment/babyshield-deployment -n ${NAMESPACE}
-                    kubectl rollout status deployment/babyshield-deployment -n ${NAMESPACE} --timeout=180s
+                        echo "🚀 Deploying BabyShield..."
+                        kubectl apply -f babyshield-deployment.yaml
+                        kubectl rollout status deployment/babyshield-deployment -n ${NAMESPACE}
                     '''
                 }
             }
