@@ -1,18 +1,6 @@
-# -------------------------------
-# PersistentVolumeClaim (optional – remove if not needed)
-# -------------------------------
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: babyshield-pvc
-  namespace: "2401107"
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
----
+# ===============================
+# Deployment (PVC REMOVED)
+# ===============================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -49,20 +37,9 @@ spec:
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 30
-
-          # ---- PVC Mount (optional) ----
-          volumeMounts:
-            - name: babyshield-static
-              mountPath: /usr/share/nginx/html   # change if not using nginx
-
-      volumes:
-        - name: babyshield-static
-          persistentVolumeClaim:
-            claimName: babyshield-pvc
----
-# -------------------------------
+# ===============================
 # Service
-# -------------------------------
+# ===============================
 apiVersion: v1
 kind: Service
 metadata:
@@ -76,10 +53,9 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
----
-# -------------------------------
+# ===============================
 # Ingress
-# -------------------------------
+# ===============================
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
