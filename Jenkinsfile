@@ -1,4 +1,8 @@
 pipeline {
+
+    /* ============================
+       AGENT: Kubernetes Pod
+       ============================ */
     agent {
         kubernetes {
             yaml '''
@@ -6,11 +10,14 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
+
+  # -------- Sonar Scanner Container --------
   - name: sonar-scanner
     image: sonarsource/sonar-scanner-cli
     command: ["cat"]
     tty: true
 
+  # -------- Kubectl Container (K8s Access) --------
   - name: kubectl
     image: bitnami/kubectl:latest
     command: ["cat"]
@@ -26,6 +33,7 @@ spec:
       mountPath: /kube/config
       subPath: kubeconfig
 
+  # -------- Docker-in-Docker Container --------
   - name: dind
     image: docker:24-dind
     securityContext:
@@ -45,6 +53,7 @@ spec:
       mountPath: /etc/docker/daemon.json
       subPath: daemon.json
 
+  # -------- Volumes --------
   volumes:
   - name: docker-storage
     emptyDir: {}
@@ -58,31 +67,41 @@ spec:
         }
     }
 
+    /* ============================
+       ENVIRONMENT VARIABLES
+       ============================ */
     environment {
-        // -------- SONAR CONFIG --------
+
+        // ----- SONAR CONFIG -----
         PROJECT_KEY   = "2401107_Sem2"
         PROJECT_NAME  = "2401107_Sem2"
         SONAR_URL     = "http://my-sonarqube-sonarqube.sonarqube.svc.cluster.local:9000"
         SONAR_SOURCES = "."
 
-        // -------- DOCKER CONFIG --------
+        // ----- DOCKER / NEXUS CONFIG -----
         IMAGE_LOCAL   = "babyshield:latest"
         REGISTRY      = "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
         REGISTRY_PATH = "smruti-project/babyshield-frontend"
         IMAGE_TAGGED  = "${REGISTRY}/${REGISTRY_PATH}:v${env.BUILD_NUMBER}"
 
-        // -------- K8S CONFIG --------
+        // ----- KUBERNETES CONFIG -----
         NAMESPACE     = "2401107"
     }
 
     stages {
 
+        /* ============================
+           STAGE 1: Checkout Code
+           ============================ */
         stage('Checkout Code') {
             steps {
                 git url: 'https://github.com/Smruti2506/E_vaccination_deploy.git', branch: 'main'
             }
         }
 
+        /* ============================
+           STAGE 2: Build Docker Image
+           ============================ */
         stage('Build Docker Image') {
             steps {
                 container('dind') {
@@ -100,10 +119,15 @@ spec:
             }
         }
 
+        /* ============================
+           STAGE 3: SonarQube Analysis
+           ============================ */
         stage('SonarQube Analysis') {
             steps {
                 container('sonar-scanner') {
-                    withCredentials([string(credentialsId: 'sonar-token-2401107', variable: 'SONAR_TOKEN')]) {
+                    withCredentials([
+                        string(credentialsId: 'sonar-token-2401107', variable: 'SONAR_TOKEN')
+                    ]) {
                         sh '''
                             echo "🔍 Running Sonar Scanner..."
 
@@ -120,6 +144,9 @@ spec:
             }
         }
 
+        /* ============================
+           STAGE 4: Login to Nexus
+           ============================ */
         stage('Login to Docker Registry') {
             steps {
                 container('dind') {
@@ -135,6 +162,9 @@ spec:
             }
         }
 
+        /* ============================
+           STAGE 5: Tag & Push Image
+           ============================ */
         stage('Tag & Push Image') {
             steps {
                 container('dind') {
@@ -147,6 +177,24 @@ spec:
             }
         }
 
+        /* ============================
+           STAGE 6: FORCE DELETE OLD PODS
+           (FIX for rollout deadline issue)
+           ============================ */
+        stage('Force Delete Old Pods') {
+            steps {
+                container('kubectl') {
+                    sh '''
+                        echo "🔥 Force deleting old BabyShield pods..."
+                        kubectl delete pod -n ${NAMESPACE} -l app=babyshield --force --grace-period=0 || true
+                    '''
+                }
+            }
+        }
+
+        /* ============================
+           STAGE 7: Deploy to Kubernetes
+           ============================ */
         stage('Deploy to Kubernetes') {
             steps {
                 container('kubectl') {
