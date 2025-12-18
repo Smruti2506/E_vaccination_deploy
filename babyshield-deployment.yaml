@@ -1,6 +1,3 @@
-# ===============================
-# Deployment (PVC REMOVED)
-# ===============================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,12 +15,11 @@ spec:
     spec:
       containers:
         - name: babyshield-container
-          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/babyshield:v1
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/smruti-project/babyshield-frontend:v12
           imagePullPolicy: Always
           ports:
             - containerPort: 80
 
-          # ---- HEALTH CHECKS ----
           readinessProbe:
             httpGet:
               path: /
@@ -37,9 +33,7 @@ spec:
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 30
-# ===============================
-# Service
-# ===============================
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -49,13 +43,10 @@ spec:
   selector:
     app: babyshield
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 80
       targetPort: 80
   type: ClusterIP
-# ===============================
-# Ingress
-# ===============================
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
