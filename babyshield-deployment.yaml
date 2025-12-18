@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: babyshield-container
-          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/smruti-project/babyshield-frontend:v12
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/smruti-project/babyshield-frontend:v14
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -24,15 +24,15 @@ spec:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 10
-            periodSeconds: 10
+            initialDelaySeconds: 5
+            periodSeconds: 5
 
           livenessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 30
+            initialDelaySeconds: 15
+            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
