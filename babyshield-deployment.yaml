@@ -8,6 +8,7 @@ metadata:
   name: babyshield-pvc
   namespace: "2401107"
 spec:
+  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
