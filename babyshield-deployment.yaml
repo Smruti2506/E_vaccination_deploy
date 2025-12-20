@@ -1,6 +1,6 @@
 # =====================================================
 # PersistentVolumeClaim
-# Used to store static content (optional but safe)
+# (PVC kept as-is, NOT deleted – safe)
 # =====================================================
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -26,13 +26,10 @@ metadata:
 spec:
   replicas: 1
 
-  # 🔑 CRITICAL FIX FOR ROLLOUT ISSUE
-  # Required when using ReadWriteOnce PVC
-  # Prevents "old replicas pending termination"
+  # 🔑 REQUIRED for PVC + single replica
   strategy:
     type: Recreate
 
-  # Time Kubernetes waits before marking rollout failed
   progressDeadlineSeconds: 600
 
   selector:
@@ -47,55 +44,45 @@ spec:
       containers:
         - name: babyshield-container
 
-          # Image pulled from Nexus (NO CHANGE)
+          # Image (NO CHANGE)
           image: 127.0.0.1:30085/smruti-project/babyshield:latest
           imagePullPolicy: Always
 
-          # NGINX listens on port 80 (NO CHANGE)
+          # NGINX port (NO CHANGE)
           ports:
             - containerPort: 80
 
           # ----------------------------
           # READINESS PROBE
-          # Marks pod READY for rollout
           # ----------------------------
           readinessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 2
             failureThreshold: 3
 
           # ----------------------------
           # LIVENESS PROBE
-          # Restarts pod if app hangs
           # ----------------------------
           livenessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 20
+            initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 2
             failureThreshold: 3
 
-          # ----------------------------
-          # PVC MOUNT (NO CHANGE)
-          # ----------------------------
-          volumeMounts:
-            - name: babyshield-static
-              mountPath: /usr/share/nginx/html
-
-      volumes:
-        - name: babyshield-static
-          persistentVolumeClaim:
-            claimName: babyshield-pvc
+          # ❌ PVC MOUNT REMOVED
+          # Reason:
+          # PVC was overriding nginx static content
+          # causing 503 from ingress
 ---
 # =====================================================
 # Service
-# Exposes deployment inside cluster
 # =====================================================
 apiVersion: v1
 kind: Service
@@ -113,7 +100,6 @@ spec:
 ---
 # =====================================================
 # Ingress
-# Exposes app to external world
 # =====================================================
 apiVersion: networking.k8s.io/v1
 kind: Ingress
