@@ -153,7 +153,7 @@ spec:
                     sh '''
                        echo "🚀 Deploying BabyShield..."
                        kubectl apply -f babyshield-deployment.yaml
-                       kubectl rollout status deployment/babyshield-deployment
+                       kubectl rollout status deployment/babyshield-deployment -n 2401107
                     '''
     }
   }
