@@ -45,7 +45,8 @@ spec:
         - name: babyshield-container
 
           # ✅ FIXED IMAGE (ONLY CHANGE)
-          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/smruti-project/babyshield:latest
+          image: 192.168.20.250:30085/smruti-project/babyshield:latest
+
           imagePullPolicy: Always
 
           ports:
