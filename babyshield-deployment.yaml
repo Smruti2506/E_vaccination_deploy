@@ -25,6 +25,12 @@ metadata:
 spec:
   replicas: 1
 
+  # 🔑 CRITICAL FIX FOR ROLLOUT ISSUE
+  # Required when using ReadWriteOnce PVC
+  # Prevents "old replicas pending termination"
+  strategy:
+    type: Recreate
+
   # Time Kubernetes waits before marking rollout failed
   progressDeadlineSeconds: 600
 
@@ -40,18 +46,17 @@ spec:
       containers:
         - name: babyshield-container
 
-          # Image pulled from Nexus (same logic as your pipeline)
+          # Image pulled from Nexus (NO CHANGE)
           image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/babyshield:v1
           imagePullPolicy: Always
 
-          # NGINX listens on port 80
+          # NGINX listens on port 80 (NO CHANGE)
           ports:
             - containerPort: 80
 
           # ----------------------------
           # READINESS PROBE
-          # Tells Kubernetes when pod is READY
-          # THIS FIXES ROLLOUT TIMEOUT ISSUE
+          # Marks pod READY for rollout
           # ----------------------------
           readinessProbe:
             httpGet:
@@ -64,7 +69,7 @@ spec:
 
           # ----------------------------
           # LIVENESS PROBE
-          # Restarts container if app hangs
+          # Restarts pod if app hangs
           # ----------------------------
           livenessProbe:
             httpGet:
@@ -76,8 +81,7 @@ spec:
             failureThreshold: 3
 
           # ----------------------------
-          # PVC MOUNT
-          # Mounted to nginx html directory
+          # PVC MOUNT (NO CHANGE)
           # ----------------------------
           volumeMounts:
             - name: babyshield-static
