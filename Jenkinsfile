@@ -151,13 +151,14 @@ spec:
             steps {
                 container('kubectl') {
                     sh '''
-                        echo "🚀 Deploying BabyShield..."
-                        kubectl apply -f babyshield-deployment.yaml
-                        // kubectl rollout status deployment/babyshield-deployment -n ${NAMESPACE}
+                       echo "🚀 Deploying BabyShield..."
+                       kubectl apply -f babyshield-deployment.yaml
+                       kubectl rollout status deployment/babyshield-deployment
                     '''
-                }
-            }
-        }
+    }
+  }
+}
+
     }
     
 }
