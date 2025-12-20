@@ -1,6 +1,7 @@
-# -------------------------------
-# PersistentVolumeClaim (optional – remove if not needed)
-# -------------------------------
+# =====================================================
+# PersistentVolumeClaim
+# Used to store static content (optional but safe)
+# =====================================================
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -13,6 +14,9 @@ spec:
     requests:
       storage: 1Gi
 ---
+# =====================================================
+# Deployment
+# =====================================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,9 +24,14 @@ metadata:
   namespace: "2401107"
 spec:
   replicas: 1
+
+  # Time Kubernetes waits before marking rollout failed
+  progressDeadlineSeconds: 600
+
   selector:
     matchLabels:
       app: babyshield
+
   template:
     metadata:
       labels:
@@ -30,39 +39,59 @@ spec:
     spec:
       containers:
         - name: babyshield-container
+
+          # Image pulled from Nexus (same logic as your pipeline)
           image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/babyshield:v1
           imagePullPolicy: Always
+
+          # NGINX listens on port 80
           ports:
             - containerPort: 80
 
-          # ---- HEALTH CHECKS ----
+          # ----------------------------
+          # READINESS PROBE
+          # Tells Kubernetes when pod is READY
+          # THIS FIXES ROLLOUT TIMEOUT ISSUE
+          # ----------------------------
           readinessProbe:
             httpGet:
               path: /
               port: 80
             initialDelaySeconds: 10
-            periodSeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
 
+          # ----------------------------
+          # LIVENESS PROBE
+          # Restarts container if app hangs
+          # ----------------------------
           livenessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 30
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
 
-          # ---- PVC Mount (optional) ----
+          # ----------------------------
+          # PVC MOUNT
+          # Mounted to nginx html directory
+          # ----------------------------
           volumeMounts:
             - name: babyshield-static
-              mountPath: /usr/share/nginx/html   # change if not using nginx
+              mountPath: /usr/share/nginx/html
 
       volumes:
         - name: babyshield-static
           persistentVolumeClaim:
             claimName: babyshield-pvc
 ---
-# -------------------------------
+# =====================================================
 # Service
-# -------------------------------
+# Exposes deployment inside cluster
+# =====================================================
 apiVersion: v1
 kind: Service
 metadata:
@@ -77,9 +106,10 @@ spec:
       targetPort: 80
   type: ClusterIP
 ---
-# -------------------------------
+# =====================================================
 # Ingress
-# -------------------------------
+# Exposes app to external world
+# =====================================================
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
